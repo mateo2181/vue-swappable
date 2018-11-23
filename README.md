@@ -1,4 +1,6 @@
-# lib-sortable
+# Swappable Component with VueJs
+
+### Using [Shopify's draggable library](https://github.com/Shopify/draggable)
 
 ## Project setup
 ```
@@ -10,20 +12,7 @@ npm install
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Build library
 ```
-npm run build
+npm run build-lib
 ```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
