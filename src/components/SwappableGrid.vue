@@ -1,11 +1,11 @@
 <template>
-    <sortable-list v-model="todos">
-        <div class="flex flex-wrap" slot-scope="{ items }">
+    <sortable-list v-model="items">
+        <div class="flex flex-wrap" style="display: flex;flex-wrap: wrap;" slot-scope="{ items }">
           <div :style="{flex: ((100 / maxRows) - 2 + '%')}" v-for="(todo,i) in items" :key="i">
             <sortable-item :id="todo.id" :style="[styleItem,typeItem(todo.empty)]" :class="{'placeholder':todo.empty}">
             <sortable-handle>
-              <div class="text-center">
-                    <span v-if="todo.description">{{ todo.description }}</span>
+              <div style="text-align:center;position:relative;">
+                    <div :style="styleItemText" v-if="todo.description">{{ todo.description }}</div>
                 </div>
             </sortable-handle>
             
@@ -22,14 +22,14 @@ import SortableItem from "./SortableItem";
 import SortableHandle from "./SortableHandle";
 import SortBy from "./utilities/sortby";
 export default {
-  name: "sortable-grid",
+  name: "swappable-grid",
   components: {
     SortableList,
     SortableItem,
     SortableHandle
   },
   props: {
-    todos: {
+    items: {
       required: true,
       type: Array
     },
@@ -61,11 +61,16 @@ export default {
         margin: "5px"
       })
     },
+    styleItemText: {
+      required: false,
+      type: Object,
+      default: () => ({})
+    },
     stylePlaceholderItem: {
       required: false,
       type: Object,
       default: () => ({
-        "background-color": "#e74b4b",
+        "background-color": "rgba(234, 192, 192, 0.68)",
         border: "1px solid #cacaca"
       })
     }
@@ -76,6 +81,7 @@ export default {
     };
   },
   created() {
+    this.checkPositions();
     this.createSpaces();
     this.sortArray();
 
@@ -108,16 +114,39 @@ export default {
       }
     },
     sortArray() {
-      this.todos.sort(SortBy("row", { name: "col" }));
+      this.items.sort(SortBy("row", { name: "col" }));
+    },
+    checkPositions() {
+      // Fix cols and rows with invalid values
+      // In this case reorder the array
+      if (
+        this.items.filter(
+          e =>
+            !Number.isInteger(e.col) ||
+            e.col >= this.maxCols ||
+            !Number.isInteger(e.row) ||
+            e.row >= this.maxRows
+        ).length > 0
+      ) {
+        let row = 0;
+        let col = 0;
+        this.items.forEach(e => {
+          e.col = col;
+          e.row = row;
+          if (col + 1 === this.maxCols) col = 0;
+          else col++;
+          if (col + 1 === this.maxCols) row++;
+        });
+      }
     },
     createSpaces() {
       for (let i = 0; i < this.maxRows; i++) {
         for (let j = 0; j < this.maxCols; j++) {
           // If element not exist in that position create space empty
-          if (this.todos.filter(e => e.col === j && e.row === i).length === 0) {
-            this.todos.push({ id: i + "" + j, empty: true, col: j, row: i });
+          if (this.items.filter(e => e.col === j && e.row === i).length === 0) {
+            this.items.push({ id: i + "" + j, empty: true, col: j, row: i });
           } else {
-            this.todos.forEach(e => {
+            this.items.forEach(e => {
               if (e.col === j && e.row === i) {
                 e.id = i + "" + j;
               }
@@ -127,39 +156,29 @@ export default {
       }
     },
     reorderItems(positionsItems) {
-      let aux = Array(this.todos.length);
+      let aux = Array(this.items.length);
       let newPosition = positionsItems.newPosition;
       let oldPosition = positionsItems.oldPosition;
-      this.todos.forEach((e, i) => {
-        let copyElement = JSON.parse(JSON.stringify(e));
-        if (e.id === oldPosition) {
-          copyElement.id = newPosition;
-          copyElement.row = parseInt(newPosition.charAt(0));
-          copyElement.col = parseInt(newPosition.charAt(1));
-        }
-        if (e.id === newPosition) {
-          copyElement.id = oldPosition;
-          copyElement.row = parseInt(oldPosition.charAt(0));
-          copyElement.col = parseInt(oldPosition.charAt(1));
-        }
-        aux[i] = copyElement;
-      });
-      this.$emit("update", aux);
+      if (newPosition && oldPosition) {
+        this.items.forEach((e, i) => {
+          let copyElement = JSON.parse(JSON.stringify(e));
+          if (e.id === oldPosition) {
+            copyElement.id = newPosition;
+            copyElement.row = parseInt(newPosition.charAt(0));
+            copyElement.col = parseInt(newPosition.charAt(1));
+          }
+          if (e.id === newPosition) {
+            copyElement.id = oldPosition;
+            copyElement.row = parseInt(oldPosition.charAt(0));
+            copyElement.col = parseInt(oldPosition.charAt(1));
+          }
+          aux[i] = copyElement;
+        });
 
+        this.$emit("update", aux);
+      }
       // this.sortArray();
     }
   }
 };
 </script>
-
-<style scoped>
-.flex {
-  display: flex;
-}
-.flex-wrap {
-  flex-wrap: wrap;
-}
-.text-center {
-  text-align: center;
-}
-</style>

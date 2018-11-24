@@ -1,11 +1,11 @@
 import Vue from "vue";
-import SortableGrid from './SortableGrid.vue';
+import SwappableGrid from './SwappableGrid.vue';
 // import ResponsiveGridLayout from './ResponsiveGridLayout.vue';
 
 
 const SwapGrid = {
     // ResponsiveGridLayout,
-    SortableGrid
+    SwappableGrid
 }
 
 // module.exports = VueGridLayout;

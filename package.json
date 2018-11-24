@@ -1,6 +1,6 @@
 {
   "name": "vue-swappable",
-  "version": "0.1.0",
+  "version": "0.1.6",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -52,5 +52,16 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "description": "### Using [Shopify's draggable library](https://github.com/Shopify/draggable)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateo2181/vue-swappable.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mateo2181/vue-swappable/issues"
+  },
+  "homepage": "https://github.com/mateo2181/vue-swappable#readme"
 }
