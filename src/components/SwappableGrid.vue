@@ -1,7 +1,7 @@
 <template>
     <sortable-list v-model="items">
         <div class="flex flex-wrap" style="display: flex;flex-wrap: wrap;" slot-scope="{ items }">
-          <div :style="{flex: ((100 / maxRows) - 2 + '%')}" v-for="(todo,i) in items" :key="i">
+          <div :style="styleCol(i)" v-for="(todo,i) in items" :key="i">
             <sortable-item :id="todo.id" :style="[styleItem,typeItem(todo.empty)]" :class="{'placeholder':todo.empty}">
             <sortable-handle>
               <div style="text-align:center;position:relative;">
@@ -21,8 +21,14 @@ import SortableList from "./SortableList";
 import SortableItem from "./SortableItem";
 import SortableHandle from "./SortableHandle";
 import SortBy from "./utilities/sortby";
+import { clone } from "./utilities/clone";
 export default {
   name: "swappable-grid",
+  data() {
+    return {
+      itemsAux: []
+    };
+  },
   components: {
     SortableList,
     SortableItem,
@@ -81,6 +87,7 @@ export default {
     };
   },
   created() {
+    // this.itemsIni = clone(this.items);
     this.checkPositions();
     this.createSpaces();
     this.sortArray();
@@ -112,6 +119,12 @@ export default {
         // style["flex"] = 100 / this.maxRows - 2 + "%";
         return style;
       }
+    },
+    styleCol: function(i) {
+      let style = {};
+      style["flex"] = 100 / this.maxCols - 0.2 + "%";
+      // if((i+1)%this.maxRows === 0) style['']
+      return style;
     },
     sortArray() {
       this.items.sort(SortBy("row", { name: "col" }));
