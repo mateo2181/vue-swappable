@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="app min-h-screen text-black bg-grey-lighter p-8">
-    <div class="max-w-sm mx-auto">
+    <div class="content">
           <div class="col">
               <span>  Filas: </span><input v-model="cantRows" class="d-inline-flex col-input form-control" type="text">
           </div>
@@ -13,6 +13,8 @@
         :maxRows="parseInt(cantRows)"
         :maxCols="parseInt(cantCols)"
         :items="todos"
+        :heightItem="'80px'"
+        :widthItem="'85px'"
         :styleItem="styleItem"
         :styleItemText="styleItemText"
         @update="updateValue">
@@ -33,14 +35,18 @@ export default {
   data() {
     return {
       renderGrid: true,
-      cantRows: 5,
-      cantCols: 5,
+      cantRows: 8,
+      cantCols: 8,
       heightItem: "4rem",
       widthItem: "4rem",
       styleItem: {
+        "width": "85px",
+        "height": "70px",
         "background-color": "#fff",
-        margin: "5px auto",
-        border: "1px solid #000"
+        "box-shadow": "0 0 5px 0 #625f5f",
+        "border-radius": "12px",
+        margin: "4px auto",
+        padding: "5px"
       },
       styleItemText: {
         position: "absolute",
@@ -56,9 +62,13 @@ export default {
         border: "1px solid #cacaca"
       },
       todos: [
-        { id: 3, description: "1", empty: false, col: 0, row: 4 },
-        { id: 4, description: "2", empty: false, col: 3, row: 2 },
-        { id: 5, description: "3", empty: false, col: 0, row: 0 }
+        { id: 1, description: "1", empty: false, col: 0, row: 4 },
+        { id: 2, description: "2", empty: false, col: 3, row: 2 },
+        { id: 3, description: "3", empty: false, col: 0, row: 0 },
+        { id: 4, description: "4", empty: false, col: 1, row: 1 },
+        { id: 5, description: "5", empty: false, col: 1, row: 3 },
+        { id: 6, description: "6", empty: false, col: 3, row: 4 },
+        { id: 7, description: "7", empty: false, col: 5, row: 2 }
       ],
       todosAux: []
     };
@@ -75,8 +85,9 @@ export default {
 </script>
 
 <style scoped>
-.app {
-  max-width: 500px;
+.content {
   background-color: rgb(228, 227, 227);
+  max-width: 800px;
+  overflow-x: scroll;
 }
 </style>

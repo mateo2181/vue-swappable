@@ -1,7 +1,7 @@
 <template>
     <sortable-list v-model="items">
-        <div class="flex flex-wrap" style="display: flex;flex-wrap: wrap;" slot-scope="{ items }">
-          <div :style="styleCol(i)" v-for="(todo,i) in items" :key="i">
+        <div class="flex flex-wrap" :style="wrapperItems()" style="display: flex;flex-wrap: wrap;" slot-scope="{ items }">
+          <div :style="styleCol()" v-for="(todo,i) in items" :key="i">
             <sortable-item :id="todo.id" :style="[styleItem,typeItem(todo.empty)]" :class="{'placeholder':todo.empty}">
             <sortable-handle>
               <div style="text-align:center;position:relative;">
@@ -51,12 +51,12 @@ export default {
     },
     heightItem: {
       required: false,
-      default: "4rem",
+      default: "70",
       type: String
     },
     widthItem: {
       required: false,
-      default: "4rem",
+      default: "85",
       type: String
     },
     styleItem: {
@@ -64,7 +64,8 @@ export default {
       type: Object,
       default: () => ({
         "background-color": "#fff",
-        margin: "5px"
+        margin: "5px",
+        "height": "75px"
       })
     },
     styleItemText: {
@@ -106,6 +107,11 @@ export default {
     this.eventBus.$off("reorderEvent", this.reorderEventHandler);
   },
   methods: {
+    wrapperItems() {
+        let style = {};
+      style["min-width"] = (10 + parseInt(this.widthItem)) * this.maxCols + "px";
+      return style;
+    },
     typeItem: function(empty) {
       if (empty) {
         // this.stylePlaceholderItem["flex"] = 100 / this.maxRows - 2 + "%";
@@ -120,11 +126,11 @@ export default {
         return style;
       }
     },
-    styleCol: function(i) {
+    styleCol: function() {
       let style = {};
       style["flex"] = 100 / this.maxCols - 0.2 + "%";
-      // if((i+1)%this.maxRows === 0) style['']
       return style;
+      // if((i+1)%this.maxRows === 0) style['']
     },
     sortArray() {
       this.items.sort(SortBy("row", { name: "col" }));
